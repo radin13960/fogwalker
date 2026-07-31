@@ -23,17 +23,21 @@
 - بعد از هر تغییر، کافیست در Unity دوباره `FogWalker > Setup > 0` و سپس `FogWalker > Build > APK` را بزنید تا نسخه‌ی نصبی تازه بگیرید.
 - اگر جایی (مثلاً Git) از پروژه نسخه‌برداری می‌کنید، همین ZIP معادل یک commit کامل است.
 
-## محتویات ZIP
+## محتویات ZIP (چیدمان «مخزن گیت‌هاب»)
 
 ```
-FogWalkerTPS/
-├─ Assets/_Project/…   (کد Runtime + Editor + ورودی + تست‌ها)
-├─ Packages/manifest.json
-├─ Docs/               (۷ سند راهنما)
-├─ tools/              (اسکریپت ساخت APK/AAB)
-├─ README.md
-├─ SNAPSHOT.md         (همین فایل)
-└─ .gitignore
+├─ .github/workflows/fogwalker-cloud-build.yml   (ساخت ابری APK — در ریشه‌ی مخزن کپی شود)
+└─ FogWalkerTPS/
+   ├─ Assets/_Project/…   (کد Runtime + Editor + ورودی + تست‌ها)
+   ├─ Packages/manifest.json
+   ├─ ProjectSettings/ProjectVersion.txt   (نسخه‌ی Unity: 6000.0.34f1)
+   ├─ Docs/               (۸ سند راهنما)
+   ├─ tools/              (اسکریپت ساخت APK/AAB روی کامپیوتر)
+   ├─ README.md
+   ├─ SNAPSHOT.md         (همین فایل)
+   └─ .gitignore
 ```
+
+> اگر از روش ساخت ابری با گوشی استفاده می‌کنید (`Docs/08-CloudBuild-Phone.md`)، فایل workflow داخل ZIP باید در مسیر `.github/workflows/` در **ریشه‌ی مخزن** شما باشد — طبق راهنما آن را یک‌بار با «Create new file» می‌سازید.
 
 *نسخه‌ی تصویر: ۱٫۰ — ۲۰۲۶*

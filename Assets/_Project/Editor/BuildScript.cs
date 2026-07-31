@@ -25,6 +25,17 @@ namespace FogWalker.EditorTools
         /// <summary>ساخت APK توسعه برای نصب سریع روی دستگاه (بدون Keystore — با کلید Debug).</summary>
         public static void BuildAndroidApk() => BuildAndroidApk(development: false);
 
+        /// <summary>
+        /// نقطه‌ی ورود ساخت ابری (GitHub Actions / batchmode تازه):
+        /// تفاوت با BuildAndroidApk این است که اول «ساخت کامل پروژه» (تولید همه‌ی پری‌فب‌ها/صحنه‌ها) اجرا می‌شود،
+        /// چون در مخزن CI صحنه‌ها از قبل وجود ندارند.
+        /// </summary>
+        public static void BuildAndroidApkCI()
+        {
+            SetupFactory.BuildEverything();
+            BuildAndroidApk(development: false);
+        }
+
         /// <summary>ساخت AAB برای Google Play.</summary>
         public static void BuildAndroidAab()
         {

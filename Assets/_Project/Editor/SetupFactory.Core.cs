@@ -54,12 +54,16 @@ namespace FogWalker.EditorTools
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
                 Debug.Log("✅ [FogWalker] ساخت کامل پروژه انجام شد. از صحنه Bootstrap بازی را شروع کنید یا Build بگیرید.");
-                EditorUtility.DisplayDialog("FogWalker", "ساخت کامل انجام شد!\nاز Bootstrap بازی را اجرا کنید.", "عالی");
+                if (!Application.isBatchMode)
+                    EditorUtility.DisplayDialog("FogWalker", "ساخت کامل انجام شد!\nاز Bootstrap بازی را اجرا کنید.", "عالی");
             }
             catch (System.Exception ex)
             {
                 Debug.LogError("❌ [FogWalker] خطا در ساخت: " + ex.Message + "\n" + ex.StackTrace);
-                EditorUtility.DisplayDialog("FogWalker", "خطا: " + ex.Message, "باشه");
+                if (!Application.isBatchMode)
+                    EditorUtility.DisplayDialog("FogWalker", "خطا: " + ex.Message, "باشه");
+                else
+                    throw; // در CI/batchmode باید job با خطا متوقف شود
             }
         }
 
