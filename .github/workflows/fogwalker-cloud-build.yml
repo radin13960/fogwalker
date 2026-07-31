@@ -16,7 +16,9 @@ jobs:
 
       - name: Unzip project to repo root
         run: |
-          unzip -o FogWalkerTPS_Full.zip -d extracted
+          Z=$(ls -t FogWalkerTPS_Full*.zip | head -1)
+          echo "Using zip: $Z"
+          unzip -o "$Z" -d extracted
           shopt -s dotglob
           cp -r extracted/FogWalkerTPS/* .
           rm -rf extracted
