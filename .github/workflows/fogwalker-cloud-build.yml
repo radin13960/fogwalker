@@ -1,78 +1,31 @@
-name: "FogWalker — ساخت ابری"
+name: "FogWalker — آماده‌سازی پروژه"
 
 on:
-  workflow_dispatch:
-    inputs:
-      step:
-        description: "کدام مرحله اجرا شود؟"
-        required: true
-        default: "build"
-        type: choice
-        options:
-          - build
-          - activation
+  workflow_dispatch: {}
 
-env:
-  UNITY_VERSION: 6000.0.34f1
+permissions:
+  contents: write
 
 jobs:
-  activation:
-    if: inputs.step == 'activation'
-    name: "دریافت فایل فعال‌سازی"
+  unpack:
+    name: "باز کردن پروژه در ریشه‌ی مخزن"
     runs-on: ubuntu-latest
     steps:
-      - name: Request manual activation file
-        uses: game-ci/unity-request-activation-file@v2
-        id: getManualLicenseFile
-        with:
-          unityVersion: ${{ env.UNITY_VERSION }}
-
-      - name: Upload activation file
-        uses: actions/upload-artifact@v4
-        with:
-          name: unity-activation-file
-          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
-
-  build:
-    if: inputs.step == 'build'
-    name: "ساخت FogWalker.apk"
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - name: Free disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
-          swap-storage: true
-          docker-images: true
-          large-packages: true
-
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract project zip
+      - name: Unzip project to repo root
         run: |
           unzip -o FogWalkerTPS_Full.zip -d extracted
-          ls extracted/FogWalkerTPS
+          shopt -s dotglob
+          cp -r extracted/FogWalkerTPS/* .
+          rm -rf extracted
+          ls -la
 
-      - name: Unity Build (game-ci)
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          unityVersion: ${{ env.UNITY_VERSION }}
-          targetPlatform: Android
-          projectPath: extracted/FogWalkerTPS
-          buildMethod: FogWalker.EditorTools.BuildScript.BuildAndroidApkCI
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: FogWalker-APK
-          path: extracted/FogWalkerTPS/Build/Android/FogWalker.apk
-          if-no-files-found: error
+      - name: Commit unpacked project
+        run: |
+          git config user.email "fogwalker-bot@users.noreply.github.com"
+          git config user.name "FogWalker Bot"
+          git add -A
+          git commit -m "Unpack Unity project" || echo "no changes"
+          git push
